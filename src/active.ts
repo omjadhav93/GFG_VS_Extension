@@ -1,14 +1,15 @@
 // startWork.ts
 import * as vscode from "vscode";
 import { getBaseDir, getGitHubSession } from "./utils";
-import { forkRepo } from "./github";
-import { cloneRepo, addUpstream } from "./git";
+import { forkRepo, getGitHubUsername } from "./github";
+import { cloneRepo, addUpstream, createBranch } from "./git";
 import { openInNewWindow } from "./vscode";
 
 export async function activeStartWork(
     context: vscode.ExtensionContext,
     owner: string,
-    repo: string
+    repo: string,
+    issueNumber: number,
 ) {
     try {
         // 1. GitHub Login
@@ -25,6 +26,11 @@ export async function activeStartWork(
 
         // 4. Add Upstream
         await addUpstream(repoPath, owner, repo);
+
+        const githubUsername = await getGitHubUsername(token);
+        const safeUsername = githubUsername.replace(/[^a-zA-Z0-9-_]/g, "");
+        const branchName = `gfg/issue-${issueNumber}-${safeUsername}`;
+        await createBranch(repoPath, branchName);
 
         // 5. Open in New Window
         await openInNewWindow(repoPath);

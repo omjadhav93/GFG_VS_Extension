@@ -1,7 +1,6 @@
 // git.ts
 import * as path from "path";
-import * as os from "os";
-import { execCmd, getBaseDir } from "./utils";
+import { execCmd } from "./utils";
 
 export async function cloneRepo(
     repoFullName: string,
@@ -26,4 +25,11 @@ export async function addUpstream(
     );
 
     await execCmd(`git fetch upstream`, repoPath);
+}
+
+export async function createBranch(
+  repoPath: string,
+  branchName: string
+) {
+  await execCmd(`git checkout -b ${branchName}`, repoPath);
 }

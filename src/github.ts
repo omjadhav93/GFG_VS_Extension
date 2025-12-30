@@ -22,3 +22,19 @@ export async function forkRepo(
   const data: any = await res.json();
   return data.full_name; // username/repo
 }
+
+export async function getGitHubUsername(token: string): Promise<string> {
+  const res = await fetch("https://api.github.com/user", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json"
+    }
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch GitHub username");
+  }
+
+  const data: any = await res.json();
+  return data.login;
+}
