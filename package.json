@@ -16,7 +16,15 @@
     "commands": [
       {
         "command": "good-first-guide.initialize",
-        "title": "gfg"
+        "title": "gfg: initialize"
+      },
+      {
+        "command": "good-first-guide.stageChanges",
+        "title": "gfg: Stage Changes"
+      },
+      {
+        "command": "good-first-guide.unStageChanges",
+        "title": "gfg: Unstage Changes"
       }
     ]
   },

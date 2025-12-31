@@ -33,3 +33,32 @@ export async function createBranch(
 ) {
   await execCmd(`git checkout -b ${branchName}`, repoPath);
 }
+
+export async function getUnstagedFiles(
+  repoPath: string
+): Promise<string[]> {
+  const output = await execCmd(
+    "git diff --name-only",
+    repoPath
+  );
+
+  return output
+    .split("\n")
+    .map(f => f.trim())
+    .filter(Boolean);
+}
+
+// gitStatus.ts (add this)
+export async function getStagedFiles(
+  repoPath: string
+): Promise<string[]> {
+  const output = await execCmd(
+    "git diff --cached --name-only",
+    repoPath
+  );
+
+  return output
+    .split("\n")
+    .map(f => f.trim())
+    .filter(Boolean);
+}

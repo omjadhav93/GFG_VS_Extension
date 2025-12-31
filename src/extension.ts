@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { activeStartWork } from './active';
+import { activeStartWork, stageChanges, unstageChanges } from './active';
 import { askIssueLink } from './utils';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -31,6 +31,32 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 		})
 	);
+
+	// extension.ts
+	context.subscriptions.push(
+		vscode.commands.registerCommand(
+			"good-first-guide.stageChanges",
+			async () => {
+				const repoPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+				if (!repoPath) {return;}
+
+				await stageChanges(repoPath);
+			}
+		)
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand(
+			"good-first-guide.unstageChanges",
+			async () => {
+				const repoPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+				if (!repoPath) {return;}
+
+				await unstageChanges(repoPath);
+			}
+		)
+	);
+
 }
 
 export function deactivate() { }
