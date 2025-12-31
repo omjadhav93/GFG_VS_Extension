@@ -22,12 +22,17 @@ export async function getGitHubSession() {
   );
 }
 
-export async function askWorkspaceLocation(): Promise<string> {
+export async function askWorkspaceLocation(
+  defaultPath?: string
+): Promise<string> {
   const result = await vscode.window.showOpenDialog({
     canSelectFiles: false,
     canSelectFolders: true,
     canSelectMany: false,
-    openLabel: "Select folder for GFG projects"
+    openLabel: "Select folder for GFG projects",
+    defaultUri: defaultPath
+      ? vscode.Uri.file(defaultPath)
+      : undefined
   });
 
   if (!result || result.length === 0) {
@@ -41,9 +46,41 @@ export async function getBaseDir(
   context: vscode.ExtensionContext
 ): Promise<string> {
   const saved = context.globalState.get<string>("gfgBaseDir");
-  if (saved) {return saved;}
 
-  const selected = await askWorkspaceLocation();
+  const selected = await askWorkspaceLocation(saved);
+
   await context.globalState.update("gfgBaseDir", selected);
   return selected;
+}
+
+export async function askIssueLink(): Promise<{
+  owner: string;
+  repo: string;
+  issueNumber: number;
+}> {
+  const input = await vscode.window.showInputBox({
+    prompt: "Paste GitHub issue link",
+    placeHolder: "https://github.com/owner/repo/issues/123",
+    ignoreFocusOut: true
+  });
+
+  if (!input) {
+    throw new Error("Issue link is required");
+  }
+
+  const match = input.match(
+    /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/issues\/(\d+)$/
+  );
+
+  if (!match) {
+    throw new Error("Invalid GitHub issue URL");
+  }
+
+  const [, owner, repo, issue] = match;
+
+  return {
+    owner,
+    repo,
+    issueNumber: Number(issue)
+  };
 }
