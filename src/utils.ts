@@ -87,3 +87,23 @@ export async function askIssueLink(): Promise<{
     issueNumber: Number(issue)
   };
 }
+
+export async function askCommitMessage(): Promise<string> {
+  const message = await vscode.window.showInputBox({
+    prompt: "Enter commit message",
+    placeHolder: "feat: fix footer alignment on mobile",
+    ignoreFocusOut: true,
+    validateInput: (value) => {
+      if (!value || value.trim().length < 5) {
+        return "Commit message must be at least 5 characters";
+      }
+      return null;
+    }
+  });
+
+  if (!message) {
+    throw new Error("Commit message is required");
+  }
+
+  return message.trim();
+}

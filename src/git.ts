@@ -48,7 +48,6 @@ export async function getUnstagedFiles(
     .filter(Boolean);
 }
 
-// gitStatus.ts (add this)
 export async function getStagedFiles(
   repoPath: string
 ): Promise<string[]> {

@@ -25,6 +25,10 @@
       {
         "command": "good-first-guide.unStageChanges",
         "title": "gfg: Unstage Changes"
+      },
+      {
+        "command": "good-first-guide.commitChanges",
+        "title": "gfg: Commit Changes"
       }
     ]
   },

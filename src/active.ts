@@ -1,6 +1,6 @@
 // startWork.ts
 import * as vscode from "vscode";
-import { execCmd, getBaseDir, getGitHubSession } from "./utils";
+import { askCommitMessage, execCmd, getBaseDir, getGitHubSession } from "./utils";
 import { forkRepo, getGitHubUsername } from "./github";
 import { cloneRepo, addUpstream, createBranch, getUnstagedFiles, getStagedFiles } from "./git";
 import { openInNewWindow } from "./vscode";
@@ -107,3 +107,24 @@ export async function unstageChanges(repoPath: string) {
   );
 }
 
+export async function commitChanges(repoPath: string) {
+  const stagedFiles = await getStagedFiles(repoPath);
+
+  if (stagedFiles.length === 0) {
+    vscode.window.showInformationMessage(
+      "No staged changes to commit."
+    );
+    return;
+  }
+
+  const message = await askCommitMessage();
+
+  await execCmd(
+    `git commit -m "${message.replace(/"/g, '\\"')}"`,
+    repoPath
+  );
+
+  vscode.window.showInformationMessage(
+    `Committed ${stagedFiles.length} file(s).`
+  );
+}
