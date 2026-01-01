@@ -16,19 +16,23 @@
     "commands": [
       {
         "command": "good-first-guide.initialize",
-        "title": "gfg: initialize"
+        "title": "GFG: initialize"
       },
       {
         "command": "good-first-guide.stageChanges",
-        "title": "gfg: Stage Changes"
+        "title": "GFG: Stage Changes"
       },
       {
         "command": "good-first-guide.unStageChanges",
-        "title": "gfg: Unstage Changes"
+        "title": "GFG: Unstage Changes"
       },
       {
         "command": "good-first-guide.commitChanges",
-        "title": "gfg: Commit Changes"
+        "title": "GFG: Commit Changes"
+      },
+      {
+        "command": "good-first-guide.revertChanges",
+        "title": "GFG: Revert Changes"
       }
     ]
   },

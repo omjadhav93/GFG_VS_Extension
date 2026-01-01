@@ -1,8 +1,8 @@
 // startWork.ts
 import * as vscode from "vscode";
-import { askCommitMessage, execCmd, getBaseDir, getGitHubSession } from "./utils";
+import { askCommitMessage, confirmRevert, execCmd, getBaseDir, getGitHubSession, pickCommit, pickRevertType } from "./utils";
 import { forkRepo, getGitHubUsername } from "./github";
-import { cloneRepo, addUpstream, createBranch, getUnstagedFiles, getStagedFiles } from "./git";
+import { cloneRepo, addUpstream, createBranch, getUnstagedFiles, getStagedFiles, getRecentCommits } from "./git";
 import { openInNewWindow } from "./vscode";
 
 export async function activeStartWork(
@@ -127,4 +127,52 @@ export async function commitChanges(repoPath: string) {
   vscode.window.showInformationMessage(
     `Committed ${stagedFiles.length} file(s).`
   );
+}
+
+export async function revertChanges(repoPath: string) {
+  const commits = await getRecentCommits(repoPath);
+
+  if (commits.length === 0) {
+    vscode.window.showInformationMessage("No commits found.");
+    return;
+  }
+
+  const commit = await pickCommit(commits);
+  if (!commit) {return;}
+
+  const type = await pickRevertType();
+  if (!type) {return;}
+
+  if (type === "revert") {
+    const confirmed = await confirmRevert(
+      `Revert commit:\n\n${commit.message}\n(${commit.hash})`
+    );
+    if (!confirmed) {return;}
+
+    await execCmd(
+      `git revert ${commit.hash} --no-edit`,
+      repoPath
+    );
+
+    vscode.window.showInformationMessage(
+      "Commit reverted successfully."
+    );
+  }
+
+  if (type === "hard-reset") {
+    const confirmed = await confirmRevert(
+      `⚠️ HARD RESET WARNING ⚠️\n\nThis will permanently discard commits after:\n${commit.message}\n(${commit.hash})`,
+      true
+    );
+    if (!confirmed) {return;}
+
+    await execCmd(
+      `git reset --hard ${commit.hash}`,
+      repoPath
+    );
+
+    vscode.window.showInformationMessage(
+      "Branch reset successfully."
+    );
+  }
 }

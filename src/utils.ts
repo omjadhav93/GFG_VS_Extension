@@ -1,6 +1,7 @@
 // utils.ts
 import * as vscode from "vscode";
 import { exec } from "child_process";
+import { GitCommit } from "./git";
 
 export function execCmd(
   cmd: string,
@@ -106,4 +107,63 @@ export async function askCommitMessage(): Promise<string> {
   }
 
   return message.trim();
+}
+
+export async function pickCommit(
+  commits: GitCommit[]
+): Promise<GitCommit | undefined> {
+  const items = commits.map(c => ({
+    label: c.message,
+    description: c.hash
+  }));
+
+  const selected = await vscode.window.showQuickPick(items, {
+    title: "Select commit to revert",
+    placeHolder: "Choose a commit (most recent first)"
+  });
+
+  if (!selected) {return;}
+
+  return commits.find(c => c.hash === selected.description);
+}
+
+export type RevertType = "revert" | "hard-reset";
+
+export async function pickRevertType(): Promise<RevertType | undefined> {
+  const selected = await vscode.window.showQuickPick(
+    [
+      {
+        label: "Revert commit (safe)",
+        description: "Creates a new commit that undoes changes"
+      },
+      {
+        label: "Hard reset (dangerous)",
+        description: "Resets branch and discards commits"
+      }
+    ],
+    {
+      title: "How do you want to go back?"
+    }
+  );
+
+  if (!selected) {return;}
+
+  return selected.label.startsWith("Revert")
+    ? "revert"
+    : "hard-reset";
+}
+
+export async function confirmRevert(
+  message: string,
+  dangerous = false
+): Promise<boolean> {
+  const confirmText = dangerous ? "Yes, reset" : "Yes, revert";
+
+  const result = await vscode.window.showWarningMessage(
+    message,
+    { modal: true },
+    confirmText
+  );
+
+  return result === confirmText;
 }

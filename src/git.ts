@@ -61,3 +61,30 @@ export async function getStagedFiles(
     .map(f => f.trim())
     .filter(Boolean);
 }
+
+export interface GitCommit {
+  hash: string;
+  message: string;
+}
+
+export async function getRecentCommits(
+  repoPath: string,
+  limit = 10
+): Promise<GitCommit[]> {
+  const output = await execCmd(
+    `git log --oneline -n ${limit}`,
+    repoPath
+  );
+
+  return output
+    .split("\n")
+    .map(line => line.trim())
+    .filter(Boolean)
+    .map(line => {
+      const [hash, ...msg] = line.split(" ");
+      return {
+        hash,
+        message: msg.join(" ")
+      };
+    });
+}
