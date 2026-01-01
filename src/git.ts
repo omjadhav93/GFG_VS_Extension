@@ -88,3 +88,69 @@ export async function getRecentCommits(
       };
     });
 }
+
+export async function getCurrentBranch(
+  repoPath: string
+): Promise<string> {
+  const output = await execCmd(
+    "git branch --show-current",
+    repoPath
+  );
+
+  const branch = output.trim();
+
+  if (!branch) {
+    throw new Error("Unable to detect current branch");
+  }
+
+  return branch;
+}
+
+export async function hasUncommittedChanges(
+  repoPath: string
+): Promise<boolean> {
+  const output = await execCmd(
+    "git status --porcelain",
+    repoPath
+  );
+
+  return output.trim().length > 0;
+}
+
+export async function fetchUpstream(
+  repoPath: string
+) {
+  await execCmd("git fetch upstream", repoPath);
+}
+
+export async function rebaseOnUpstream(
+  repoPath: string,
+  baseBranch = "main"
+) {
+  await execCmd(
+    `git rebase upstream/${baseBranch}`,
+    repoPath
+  );
+}
+
+export async function getConflictedFiles(
+  repoPath: string
+): Promise<string[]> {
+  const output = await execCmd(
+    "git diff --name-only --diff-filter=U",
+    repoPath
+  );
+
+  return output
+    .split("\n")
+    .map(f => f.trim())
+    .filter(Boolean);
+}
+
+export async function continueRebase(repoPath: string) {
+  await execCmd("git rebase --continue", repoPath);
+}
+
+export async function abortRebase(repoPath: string) {
+  await execCmd("git rebase --abort", repoPath);
+}

@@ -2,6 +2,8 @@
 import * as vscode from "vscode";
 import { exec } from "child_process";
 import { GitCommit } from "./git";
+import path from "path";
+import fs from "fs";
 
 export function execCmd(
   cmd: string,
@@ -166,4 +168,61 @@ export async function confirmRevert(
   );
 
   return result === confirmText;
+}
+
+export async function confirmSync(
+  branch: string
+): Promise<boolean> {
+  const result = await vscode.window.showInformationMessage(
+    `Sync branch "${branch}" with upstream/main using rebase?`,
+    {
+      modal: true,
+      detail:
+        "This will replay your commits on top of the latest upstream changes."
+    },
+    "Sync"
+  );
+
+  return result === "Sync";
+}
+
+
+export function isRebaseInProgress(repoPath: string): boolean {
+  const gitDir = path.join(repoPath, ".git");
+
+  return (
+    fs.existsSync(path.join(gitDir, "rebase-merge")) ||
+    fs.existsSync(path.join(gitDir, "rebase-apply"))
+  );
+}
+
+export async function openConflictedFiles(
+  repoPath: string,
+  files: string[]
+) {
+  for (const file of files) {
+    const uri = vscode.Uri.file(path.join(repoPath, file));
+    await vscode.window.showTextDocument(uri, { preview: false });
+  }
+}
+
+
+export async function guideUserThroughConflict(
+  files: string[],
+  inRebase: boolean
+) {
+  const message =
+    `⚠️ Merge conflicts detected.\n\n` +
+    `Conflicted files:\n` +
+    files.map(f => `• ${f}`).join("\n");
+
+  const action = await vscode.window.showWarningMessage(
+    message,
+    { modal: true },
+    { title: "Open Conflicted Files" },
+    ...(inRebase ? [{ title: "Continue Rebase" }] : []),
+    ...(inRebase ? [{ title: "Abort Rebase" }] : [])
+  );
+
+  return action;
 }

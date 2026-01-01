@@ -33,6 +33,14 @@
       {
         "command": "good-first-guide.revertChanges",
         "title": "GFG: Revert Changes"
+      },
+      {
+        "command": "good-first-guide.pushChanges",
+        "title": "GFG: Push Chnages"
+      },
+      {
+        "command": "good-first-guide.syncWithUpstream",
+        "title": "GFG: Sync with Upstream"
       }
     ]
   },

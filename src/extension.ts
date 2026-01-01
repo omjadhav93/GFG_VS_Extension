@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { activeStartWork, commitChanges, revertChanges, stageChanges, unstageChanges } from './active';
+import { activeStartWork, commitChanges, handleConflicts, pushChanges, revertChanges, stageChanges, syncWithUpstream, unstageChanges } from './active';
 import { askIssueLink } from './utils';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -93,8 +93,46 @@ export function activate(context: vscode.ExtensionContext) {
 				try {
 					await revertChanges(repoPath);
 				} catch (err: any) {
+					await handleConflicts(repoPath);
+				}
+			}
+		)
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand(
+			"good-first-guide.pushChanges",
+			async () => {
+				const repoPath =
+					vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+
+				if (!repoPath) {
+					vscode.window.showErrorMessage("No workspace folder found.");
+					return;
+				}
+
+				try {
+					await pushChanges(repoPath);
+				} catch (err: any) {
 					vscode.window.showErrorMessage(err.message);
 				}
+			}
+		)
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand(
+			"good-first-guide.syncWithUpstream",
+			async () => {
+				const repoPath =
+					vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+
+				if (!repoPath) {
+					vscode.window.showErrorMessage("No workspace folder found.");
+					return;
+				}
+
+				await syncWithUpstream(repoPath);
 			}
 		)
 	);

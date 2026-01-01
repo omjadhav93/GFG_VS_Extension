@@ -1,3 +1,5 @@
+import { execCmd } from "./utils";
+
 // github.ts
 export async function forkRepo(
   token: string,
@@ -38,3 +40,16 @@ export async function getGitHubUsername(token: string): Promise<string> {
   const data: any = await res.json();
   return data.login;
 }
+
+export async function hasCommitsToPush(
+  repoPath: string,
+  branch: string
+): Promise<boolean> {
+  const output = await execCmd(
+    `git rev-list --count origin/${branch}..HEAD`,
+    repoPath
+  );
+
+  return Number(output.trim()) > 0;
+}
+
