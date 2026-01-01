@@ -29,7 +29,7 @@ export async function activeStartWork(
 
     const githubUsername = await getGitHubUsername(token);
     const safeUsername = githubUsername.replace(/[^a-zA-Z0-9-_]/g, "");
-    const branchName = `gfg/issue-${issueNumber}-${safeUsername}`;
+    const branchName = `issue-${issueNumber}-${safeUsername}`;
     await createBranch(repoPath, branchName);
 
     // 5. Open in New Window
