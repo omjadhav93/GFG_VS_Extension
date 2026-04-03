@@ -6,26 +6,26 @@ GFG removes the fear and confusion around contributing to open source by providi
 
 ---
 
-## ✨ What GFG Does (Current Features)
+## What GFG Does (Current Features)
 
 GFG helps contributors handle **everything locally** before opening a Pull Request.
 
-### ✅ Implemented Features
+### Implemented Features
 
-- 🔐 GitHub authentication via VS Code
-- 📁 Choose & remember workspace location
-- 🌱 Fork repositories automatically (for OSS)
-- 🔗 Add `upstream` remote correctly
-- 🌿 Create and work on a dedicated feature branch
-- 📦 Stage & unstage files with file selection
-- 📝 Commit changes with validation
-- 🔄 Sync with upstream (`fetch + rebase`)
-- 🚀 Push changes safely to fork
-- ⏪ Revert commits (safe revert + optional hard reset)
-- ⚠️ Detect merge conflicts
-- 🧭 Guide users through conflict resolution
+- GitHub authentication via VS Code
+- Choose & remember workspace location
+- Fork repositories automatically (for OSS)
+- Add `upstream` remote correctly
+- Create and work on a dedicated feature branch
+- Stage & unstage files with file selection
+- Commit changes with validation
+- Sync with upstream (`fetch + rebase`)
+- Push changes safely to fork
+- Revert commits (safe revert + optional hard reset)
+- Detect merge conflicts
+- Guide users through conflict resolution
 
-> ❌ Pull Request creation is **intentionally not implemented yet**  
+> Pull Request creation is **intentionally not implemented yet**  
 > (It will be added in the next phase with AI assistance.)
 
 ---
@@ -143,7 +143,7 @@ issue-<number>-<username>
 
 ---
 
-## 🔐 Security & Trust
+## Security & Trust
 
 - All Git actions run **locally**
 - GitHub operations use **user’s identity**
@@ -153,7 +153,7 @@ issue-<number>-<username>
 
 ---
 
-## 🚧 Roadmap
+## Roadmap
 
 ### Coming Next
 - Pull Request creation
@@ -165,7 +165,7 @@ issue-<number>-<username>
 
 ---
 
-## 📦 Installation (Development)
+## Installation (Development)
 
 ### Run locally
 ```bash
